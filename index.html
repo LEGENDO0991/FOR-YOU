@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You.</title>
+
+    <style>
+        :root {
+            --accent: #00f2ff;
+            --bg: #0a0a0a;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Subtle Background Grain */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .container {
+            position: relative;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin: 0;
+            background: linear-gradient(to bottom right, #fff, #666);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .birthday-text {
+            color: var(--accent);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .message {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #a0a0a0;
+            margin: 25px 0;
+        }
+
+        .btn {
+            background: white;
+            color: black;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+            background: var(--accent);
+        }
+
+        /* Moving Background Particles */
+        .particle {
+            position: absolute;
+            background: var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .accent-icon {
+            font-size: 1.6rem;
+            color: var(--accent);
+            opacity: 0.6;
+            margin: 14px 0;
+        }
+
+        .glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 250px;
+            height: 250px;
+            background: var(--accent);
+            filter: blur(120px);
+            opacity: 0.1;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s forwards;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="glow"></div>
+
+    <div class="container">
+        <div id="view-1">
+            <span class="birthday-text">January 5, 2026</span>
+            <h1>It's a big day.</h1>
+            <p class="message">
+                I don’t usually do things like this.<br>
+                But today felt like a good excuse.
+            </p>
+            <button class="btn" onclick="nextStep()">Enter</button>
+        </div>
+
+        <div id="view-2" class="hidden">
+            <div class="glass-card">
+                <span class="birthday-text">Happy Birthday</span>
+                <h1>ANSHIKA.</h1>
+                <p class="message">
+                    Happy birthday!<br>
+                    Hope today’s treating you well already.
+                </p>
+                <div class="accent-icon">(,,>﹏<,,)</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function nextStep() {
+            const v1 = document.getElementById('view-1');
+            const v2 = document.getElementById('view-2');
+
+            v1.style.transition = '0.5s';
+            v1.style.opacity = '0';
+
+            setTimeout(() => {
+                v1.style.display = 'none';
+                v2.classList.remove('hidden');
+                v2.classList.add('fade-in');
+
+                createExplosion();
+                setInterval(createMovingGrain, 100);
+            }, 500);
+        }
+
+        function createExplosion() {
+            for (let i = 0; i < 30; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.width = '2px';
+                p.style.height = '2px';
+                p.style.left = '50%';
+                p.style.top = '50%';
+                document.body.appendChild(p);
+
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.random() * 200 + 50;
+
+                p.animate([
+                    { transform: 'translate(0, 0)', opacity: 1 },
+                    {
+                        transform: `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px)`,
+                        opacity: 0
+                    }
+                ], {
+                    duration: 1500,
+                    easing: 'cubic-bezier(0.1, 1, 0.1, 1)'
+                }).onfinish = () => p.remove();
+            }
+        }
+
+        function createMovingGrain() {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 2 + 1 + 'px';
+            p.style.width = size;
+            p.style.height = size;
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.top = Math.random() * 100 + 'vh';
+            document.body.appendChild(p);
+
+            const duration = Math.random() * 3000 + 2000;
+            const moveX = (Math.random() - 0.5) * 100;
+            const moveY = (Math.random() - 0.5) * 100;
+
+            p.animate([
+                { opacity: 0, transform: 'translate(0, 0)' },
+                { opacity: 0.4, offset: 0.5 },
+                { opacity: 0, transform: `translate(${moveX}px, ${moveY}px)` }
+            ], {
+                duration,
+                easing: 'linear'
+            }).onfinish = () => p.remove();
+        }
+    </script>
+
+</body>
+</html>
